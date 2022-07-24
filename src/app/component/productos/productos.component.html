@@ -1,0 +1,35 @@
+
+<app-menu-bar></app-menu-bar>
+
+<p-table [value]="productos" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Item</th>
+            <th>Nombre</th>
+            <th>Referencia</th>
+            <th>Codigo de Barras</th>
+            <th>Modo de Venta</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Stock Sub</th>
+            <th>Vlr. Sub</th>
+            <th>Stock Und</th>
+            <th>Vlr. Und</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td>{{product.item}}</td>
+            <td>{{product.nombre}}</td>
+            <td>{{product.referencia}}</td>
+            <td>{{product.codigoBarras}}</td>
+            <td>{{product.modoV}}</td>
+            <td>{{product.stock}}</td>
+            <td>{{product.precio}}</td>
+            <td>{{product.stockSub}}</td>
+            <td>{{product.vlrSub}}</td>
+            <td>{{product.stockund}}</td>
+            <td>{{product.vlrund}}</td>
+        </tr>
+    </ng-template>
+</p-table>
