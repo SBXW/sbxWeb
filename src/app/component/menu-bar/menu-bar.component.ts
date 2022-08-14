@@ -18,7 +18,7 @@ export class MenuBarComponent implements OnInit {
       {
           label:'Productos',
           icon:'pi pi-shopping-bag',
-          command:(click)=>{this.route.navigate(['/productos/X/Contiene/Nombre']);}
+          command:(click)=>{this.route.navigate(['/productos']);}
       }
   ];
 }

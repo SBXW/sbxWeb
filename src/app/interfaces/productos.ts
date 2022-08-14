@@ -11,7 +11,7 @@ export interface Productos {
     marca: number,
     proveedor: string,
     modoVenta: string,
-    ubicación: number,
+    ubicacion: number,
     salidaPara: number,
     stockMinimo: number,
     stockMaximo: number,
@@ -27,7 +27,7 @@ export interface Productos {
     fechaRegistro: Date,
     movimiento: string,
     descuentoProveedor: number,
-    fechaVencimiento:  Date,
+    fechaVencimiento:  string,
     costoCalculado: number,
     nota: string
 }

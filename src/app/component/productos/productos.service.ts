@@ -23,4 +23,9 @@ export class ProductosService {
   getConsultaEstadoProductos(Buscar:string, TipoBusqueda: string, DatoBusqueda:string): Observable<ConsultaEstadoProducto[]> { 
     return this.apiCallService.get(`${this.url}api/Productos/consultaEstadoProducto/Buscar/${Buscar}/TipoBusqueda/${TipoBusqueda}/DatoBusqueda/${DatoBusqueda}`)
   }
+
+  postProductos (productos: Productos ): Observable<ProductosService[]> {
+    return this.apiCallService.post(this.url+"api/Productos", productos)
+  }
+
 }

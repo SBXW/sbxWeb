@@ -1,37 +1,220 @@
-
 <app-menu-bar></app-menu-bar>
 
-<p-table [value]="productos" responsiveLayout="scroll">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Item</th>
-            <th>Nombre</th>
-            <th>Referencia</th>
-            <th>Codigo de Barras</th>
-            <th>Modo de Venta</th>
-            <th>Stock</th>
-            <th>Precio</th>
-            <th>Stock Sub</th>
-            <th>Vlr. Sub</th>
-            <th>Stock Und</th>
-            <th>Vlr. Und</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-product>
-        <tr>
-            <td>{{product.item}}</td>
-            <td>{{product.nombre}}</td>
-            <td>{{product.referencia}}</td>
-            <td>{{product.codigoBarras}}</td>
-            <td>{{product.modoV}}</td>
-            <td>{{product.stock}}</td>
-            <td>{{product.precio}}</td>
-            <td>{{product.stockSub}}</td>
-            <td>{{product.vlrSub}}</td>
-            <td>{{product.stockund}}</td>
-            <td>{{product.vlrund}}</td>
-        </tr>
-    </ng-template>
+<p-toolbar>
+  <div class="p-toolbar-group-left">
+
+  </div>
+  <div class="p-toolbar-group-right">
+    <p-button label="Crear" icon="pi pi-plus" [style]="{'margin-right':'10px'}" (click)="mtdAbrirModal()"></p-button>
+    <p-button label="Actualizar" icon="pi pi-refresh" (click)="buscarProducto()"></p-button>
+  </div>
+</p-toolbar>
+
+<p-table #dt1 [value]="productos" responsiveLayout="scroll" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+  [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm" [paginator]="true"
+  [style]="{'font-size':'15px'}" currentPageReportTemplate="Registro {first} al {last} de {totalRecords} Productos"
+  [scrollable]="true" scrollHeight="380px" [globalFilterFields]="['item','nombre','codigoBarras','stock','precio']">
+  <ng-template pTemplate="caption">
+    <i></i>
+    <input class="pi pi-search" #textf pInputText type="text" (input)="filterGlobal(textf.value)" />
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Item</th>
+      <th>Nombre</th>
+      <th>Referencia</th>
+      <th>Codigo Barras</th>
+      <th>Modo de Venta</th>
+      <th>Stock</th>
+      <th>Precio</th>
+      <th>Stock Sub</th>
+      <th>Vlr. Sub</th>
+      <th>Stock Und</th>
+      <th>Vlr. Und</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-product>
+    <tr>
+      <td>{{product.item}}</td>
+      <td>{{product.nombre}}</td>
+      <td>{{product.referencia}}</td>
+      <td>{{product.codigoBarras}}</td>
+      <td>{{product.modoV}}</td>
+      <td>{{product.stock}}</td>
+      <td>{{product.precio}}</td>
+      <td>{{product.stockSub}}</td>
+      <td>{{product.vlrSub}}</td>
+      <td>{{product.stockund}}</td>
+      <td>{{product.vlrund}}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+
+  </ng-template>
 </p-table>
 
-<button>Prueba</button>
+<!-- <Modal para crear> -->
+  <img src="assets/images/LogoSBX.png" height="40" class="mr-2">
+<p-dialog header="Crear Producto" [(visible)]="CrearProducto" [style]="{width: '90vw'}">
+  <form [formGroup]="formDatos" (ngSubmit)="mtdGuardar()" autocomplete="off">
+    <div class="row">
+      <div class="col-4">
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="exampleFormControlInput1" formControlName="forNombre" id="nombre"
+            placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Descripcion</label>
+          <input type="text" class="form-control" id="exampleFormControlInput1" formControlName="forDescripcion"
+            id="nombre" placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Referencia</label>
+          <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forReferencia"
+            id="nombre" placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Codigo Barras</label>
+          <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forCodigoBarras"
+            id="nombre" placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">IVA %</label>
+          <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forIVA" id="nombre"
+            placeholder="">
+          <small *ngIf="ivaInvalido" style="color:red">Falta % de IVA</small>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Unidad de Medida</label>
+          <p-autoComplete #buscar class="form-control" formControlName="forUnidadMedida" [virtualScroll]="true" [suggestions]="ListaUnidadMedida" 
+          [virtualScrollItemSize]="34" (completeMethod)="filterGlobalUnidadMedida($event.query)" field="nombre" [dropdown]="true">
+          </p-autoComplete>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Medida</label>
+          <input type="text" class="form-control" id="exampleFormControlInput1" formControlName="forMedida" id="nombre"
+            placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Estado</label>
+          <p-dropdown [options]="estado" class="form-control" formControlName="forEstado" optionLabel="name"></p-dropdown>
+        </div>
+    </div>
+      <div class="col-4">
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Categoria</label>
+          <p-autoComplete #buscar class="form-control" formControlName="forCategoria" [virtualScroll]="true" [suggestions]="ListaCategoria" 
+          [virtualScrollItemSize]="34" (completeMethod)="filterGlobalCategoria($event.query)" field="nombre" [dropdown]="true">
+          </p-autoComplete>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Marca</label>
+          <p-autoComplete #buscar class="form-control" formControlName="forMarca" [virtualScroll]="true" [suggestions]="listaMarca" 
+          [virtualScrollItemSize]="34" (completeMethod)="filterGlobalMarca($event.query)" field="nombre" [dropdown]="true">
+          </p-autoComplete>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Modo Venta</label>
+          <p-dropdown [options]="modoVenta" class="form-control" formControlName="forModoVenta" optionLabel="name"></p-dropdown>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Proveedor</label>
+          <p-autoComplete #buscar class="form-control" formControlName="forProveedor" [virtualScroll]="true" [suggestions]="ListaProveedor" 
+          [virtualScrollItemSize]="34" (completeMethod)="filterGlobalProveedor($event.query)" field="nombre" [dropdown]="true">
+          </p-autoComplete>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Costo</label>
+          <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forCosto"
+            id="nombre" placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Precio</label>
+          <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forPrecio"
+            id="nombre" placeholder="">
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Margen</label>
+          <input #margen type="number" class="form-control" id="exampleFormControlInput1" formControlName="forMargen" id="nombre"
+            placeholder="" (input)="calculoMargen(margen.value)">
+          <small *ngIf="margenValido" style="color:red">Falta el Margen</small>
+        </div>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Ubicacion</label>
+          <p-autoComplete #buscar class="form-control" formControlName="forUbicacion" [virtualScroll]="true" [suggestions]="ListaUbicacion" 
+          [virtualScrollItemSize]="34" (completeMethod)="filterGlobalUbicacion($event.query)" field="nombre" [dropdown]="true">
+          </p-autoComplete>
+        </div>
+      </div>
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Salida Para</label>
+            <p-autoComplete #buscar class="form-control" formControlName="forSalida" [virtualScroll]="true" [suggestions]="ListaSalidaPara" 
+          [virtualScrollItemSize]="34" (completeMethod)="filterGlobalSalidaPara($event.query)" field="nombre" [dropdown]="true">
+          </p-autoComplete>
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Fecha Vencimiento</label>
+            <input type="date" class="form-control" id="exampleFormControlInput1" formControlName="forFechaV" id="nombre"
+              placeholder="">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Stock Minimo</label>
+            <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forStockMin" id="nombre"
+              placeholder="">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Stock Maximo</label>
+            <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forStocMax" id="nombre"
+              placeholder="">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Stock Actual</label>
+            <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forStockActual" id="nombre"
+              placeholder="">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Cantidad</label>
+            <input type="number" class="form-control" id="exampleFormControlInput1" formControlName="forCantidad" id="nombre"
+              placeholder="">
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Nota</label>
+            <input type="text" class="form-control" id="exampleFormControlInput1" formControlName="forNota" id="nombre"
+              placeholder="">
+          </div>
+          <div class="mb-3">
+            <label for="inlineRadio1" class="form-check-label">Tipo Registro</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+            <label class="form-check-label" for="inlineRadio1">Entrada</label>
+          </div>
+          <div class="form-check form-check-inline mb-3">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+            <label class="form-check-label" for="inlineRadio2">Salida</label>
+          </div>
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Imagen Producto</label>
+            <input type="file" class="form-control" id="formFile" formControlName="forImagen" id="nombre"
+              placeholder="">
+          </div>
+        <!-- <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label">Dueño</label>
+          <select class="form-select" aria-label="Default select example" formControlName="forIdOwner">
+            <option value="{{Productos}}" *ngFor="let Productos of productos">{{Productos.nombre}}</option>
+          </select>
+        </div> -->
+      </div>
+    </div>
+    <p-button label="Guardar" type="submit" icon="pi pi-check" iconPos="right"></p-button>
+    <p-messages [(value)]="msgRegistroProducto" [enableService]="false"></p-messages>
+  </form>
+
+  <!-- <ng-template pTemplate="footer">
+                Para colocar botones debajo del modal - ojo deben tener metodo en TS
+                
+            </ng-template> -->
+
+</p-dialog>
